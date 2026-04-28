@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Album de recuerdos - Para ti amorcito ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0015 0%, #14002a 50%, #0a0015 100%);
+            font-family: 'Brush Script MT', 'Comic Sans MS', cursive;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: pan-x pan-y;
+        }
+
+        /* Iluminación lila */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(1000px, 150%);
+            height: min(700px, 150%);
+            background: radial-gradient(circle, rgba(180, 130, 255, 0.25) 0%, rgba(180, 130, 255, 0.1) 40%, rgba(180, 130, 255, 0) 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Partículas */
+        #particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.5;
+            animation: float linear infinite;
+            box-shadow: 0 0 8px rgba(255,255,255,0.8);
+        }
+        .particle.pink {
+            background-color: #ffb6e6;
+            box-shadow: 0 0 10px rgba(255, 182, 230, 0.8);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Contenedor principal */
+        .main-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            padding: 10px;
+        }
+
+        .book-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 2000px;
+            width: 100%;
+            max-width: min(90vw, 90vh);
+            margin: 0 auto;
+        }
+
+        /* Libro responsive - se ajusta a la pantalla */
+        .book {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 800 / 550;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        /* Portada */
+        .cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #6a2a8a 0%, #7b3fa0 30%, #8b5bb5 70%, #9b6fc8 100%);
+            border-radius: 15px 8px 8px 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transform-origin: left center;
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+            z-index: 100;
+            border: 1px solid #9a45f5;
+        }
+
+        /* Corazones en esquinas */
+        .heart-corner {
+            position: absolute;
+            font-size: clamp(1rem, 4vw, 1.8rem);
+            color: #ff69b4;
+            text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+            z-index: 102;
+        }
+
+        .heart-tl {
+            top: 5px;
+            left: 10px;
+        }
+
+        .heart-tr {
+            top: 5px;
+            right: 10px;
+        }
+
+        .heart-bl {
+            bottom: 5px;
+            left: 10px;
+        }
+
+        .heart-br {
+            bottom: 5px;
+            right: 10px;
+        }
+
+        /* Título */
+        .cover-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(2rem, 10vw, 3.5rem);
+            color: #D4AF37;
+            text-align: center;
+            font-family: 'Brush Script MT', 'Comic Sans MS', cursive;
+            font-style: normal;
+            white-space: nowrap;
+            background: linear-gradient(135deg, #ffd166, #ffb6e6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            z-index: 101;
+            transition: opacity 0.5s ease;
+        }
+
+        .book.open .cover-title {
+            opacity: 0;
+        }
+
+        /* Lomo */
+        .spine {
+            position: absolute;
+            left: -12px;
+            top: -2px;
+            width: 16px;
+            height: calc(100% + 4px);
+            background: linear-gradient(135deg, #6a2a8a 0%, #7b3fa0 30%, #8b5bb5 70%, #9b6fc8 100%);
+            border-radius: 5px 2px 2px 5px;
+            z-index: 102;
+        }
+
+        .spine::before,
+        .spine::after {
+            content: "❤️";
+            position: absolute;
+            left: 2px;
+            font-size: 8px;
+            color: #ff69b4;
+        }
+
+        .spine::before {
+            top: 10px;
+        }
+
+        .spine::after {
+            bottom: 10px;
+        }
+
+        /* Páginas */
+        .pages-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #faf8f0;
+            border-radius: 8px 12px 12px 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            backface-visibility: hidden;
+            transform-origin: left center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            overflow: hidden;
+            overflow-y: auto;
+        }
+
+        /* Diseño 2x2 para las páginas */
+        .page-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 8px;
+            padding: 10px;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        /* Estilo especial para página de solo texto (página 2) */
+        .page-text-only {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            height: 100%;
+            text-align: center;
+        }
+
+        .page-text-only textarea {
+            width: 100%;
+            height: 100%;
+            font-family: 'Brush Script MT', 'Comic Sans MS', cursive;
+            font-style: italic;
+            font-size: 1.2rem;
+            border: none;
+            background: transparent;
+            color: #5C3D2E;
+            resize: none;
+            text-align: center;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .grid-cell {
+            background: rgba(210, 180, 140, 0.15);
+            border-radius: 10px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .photo-cell {
+            background: rgba(245, 240, 225, 0.9);
+        }
+
+        .text-cell {
+            background: rgba(255, 250, 240, 0.95);
+        }
+
+        /* ==================== BORDES DECORATIVOS PARA FOTOS ==================== */
+        
+        /* Marco de fotos con decoración de corazones */
+        .photo-frame {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            background: #f5f0e0;
+            min-height: 80px;
+            overflow: hidden;
+            border: 3px solid #ff69b4;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #fff8f0, #faf0e0);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            padding: 5px;
+        }
+        
+        /* Efecto al pasar el dedo (hover) */
+        .photo-frame:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+            border-color: #ff85c1;
+        }
+        
+        /* Corazón en esquina superior izquierda */
+        .photo-frame::before {
+            content: "❤️";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            font-size: 22px;
+            text-shadow: 0 0 3px #ff69b4;
+            z-index: 5;
+            background: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+        
+        /* Corazón en esquina inferior derecha */
+        .photo-frame::after {
+            content: "❤️";
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            font-size: 22px;
+            text-shadow: 0 0 3px #ff69b4;
+            z-index: 5;
+            background: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+        
+        /* Ajuste para que la imagen no se sobreponga a los corazones */
+        .photo-preview {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Mejora del marco en móviles */
+        @media (max-width: 700px) {
+            .photo-frame::before,
+            .photo-frame::after {
+                width: 22px;
+                height: 22px;
+                font-size: 16px;
+                top: -6px;
+                left: -6px;
+            }
+            .photo-frame::after {
+                bottom: -6px;
+                right: -6px;
+                top: auto;
+                left: auto;
+            }
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            max-height: 200px;
+            min-height: 150px;
+        }
+
+        .photo-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: #8B7355;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.7rem;
+        }
+
+        .photo-empty::before {
+            content: "🖼️";
+            font-size: 1.8rem;
+        }
+
+        .note-text {
+            width: 100%;
+            min-height: 70px;
+            padding: 8px;
+            font-family: 'Brush Script MT', 'Comic Sans MS', cursive;
+            font-style: italic;
+            font-size: 0.85rem;
+            border: none;
+            background: transparent;
+            color: #5C3D2E;
+            resize: none;
+            line-height: 1.3;
+        }
+
+        .cell-label {
+            font-size: 0.6rem;
+            color: #D4AF37;
+            margin-bottom: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .page-number {
+            text-align: center;
+            margin-top: 6px;
+            padding: 3px;
+            color: #D4AF37;
+            font-size: 0.65rem;
+            font-family: monospace;
+            grid-column: span 2;
+        }
+
+        /* Scroll */
+        .page::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .page::-webkit-scrollbar-track {
+            background: #f0e6d2;
+        }
+
+        .page::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 10px;
+        }
+
+        /* Controles de navegación - siempre accesibles */
+        .navigation {
+            position: absolute;
+            bottom: -50px;
+            right: 5px;
+            display: flex;
+            gap: 10px;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .navigation.visible {
+            opacity: 1;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid #D4AF37;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: #D4AF37;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Botón cerrar */
+        .close-btn {
+            position: absolute;
+            bottom: -50px;
+            left: 5px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ff69b4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #ff69b4;
+            transition: all 0.3s ease;
+            z-index: 200;
+            opacity: 0;
+        }
+
+        .close-btn.visible {
+            opacity: 1;
+        }
+
+        .close-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Indicador de página */
+        .page-indicator {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 5px 12px;
+            border-radius: 25px;
+            color: #D4AF37;
+            font-size: 0.7rem;
+            font-family: 'Brush Script MT', 'Comic Sans MS', cursive;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border: 1px solid #D4AF37;
+            white-space: nowrap;
+        }
+
+        .page-indicator.visible {
+            opacity: 1;
+        }
+
+        /* Control de música */
+        .music-control {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 300;
+            border: 1px solid #D4AF37;
+            font-size: 1.3rem;
+        }
+
+        /* Instrucción */
+        .instruction {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 12px;
+            border-radius: 25px;
+            color: white;
+            font-size: 0.7rem;
+            font-family: 'Brush Script MT', 'Comic Sans MS', cursive;
+            z-index: 300;
+            pointer-events: none;
+            animation: pulse 2s infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ==================== RESPONSIVE PARA TELÉFONO ==================== */
+
+        /* Vertical (retrato) */
+        @media (max-width: 700px) and (orientation: portrait) {
+            .book-wrapper {
+                max-width: 90vw;
+            }
+
+            .page-grid {
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .grid-cell {
+                padding: 6px;
+            }
+
+            .note-text {
+                min-height: 60px;
+                font-size: 0.8rem;
+            }
+
+            .photo-empty::before {
+                font-size: 1.5rem;
+            }
+
+            .photo-empty {
+                padding: 8px;
+                font-size: 0.65rem;
+            }
+
+            .cell-label {
+                font-size: 0.55rem;
+            }
+
+            .nav-btn,
+            .close-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+
+            .navigation {
+                bottom: -45px;
+            }
+
+            .close-btn {
+                bottom: -45px;
+            }
+
+            .page-indicator {
+                bottom: -45px;
+                font-size: 0.65rem;
+                padding: 4px 10px;
+            }
+
+            /* Ajuste para página de solo texto en móvil */
+            .page-text-only textarea {
+                font-size: 1rem;
+                padding: 10px;
+            }
+        }
+
+        /* Horizontal (landscape) - botones a los lados */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .book-wrapper {
+                max-width: 95vh;
+                transform: scale(1);
+                margin: 0 auto;
+            }
+
+            /* Botón siguiente a la derecha del libro */
+            .navigation {
+                position: absolute;
+                bottom: auto;
+                top: 50%;
+                right: -60px;
+                transform: translateY(-50%);
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                opacity: 0;
+                transition: opacity 0.5s ease;
+            }
+
+            /* Botón anterior a la izquierda del libro */
+            .close-btn {
+                position: absolute;
+                bottom: auto;
+                top: 50%;
+                left: -60px;
+                transform: translateY(-50%);
+                opacity: 0;
+                transition: opacity 0.5s ease;
+            }
+
+            /* Indicador de página abajo */
+            .page-indicator {
+                bottom: -35px;
+                font-size: 0.65rem;
+                padding: 3px 8px;
+            }
+
+            .nav-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.5rem;
+            }
+
+            .close-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+
+            .main-container {
+                padding: 10px;
+            }
+        }
+
+        /* Pantallas muy pequeñas */
+        @media (max-width: 480px) and (orientation: portrait) {
+            .book-wrapper {
+                max-width: 95vw;
+            }
+
+            .page-grid {
+                gap: 5px;
+                padding: 6px;
+            }
+
+            .note-text {
+                min-height: 50px;
+                font-size: 0.75rem;
+            }
+
+            .photo-empty::before {
+                font-size: 1.2rem;
+            }
+
+            .nav-btn,
+            .close-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="particles-container"></div>
+
+    <!-- Control de música -->
+    <div class="music-control" id="musicControl">🔇</div>
+
+    <!-- Reproductor de audio -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://files.catbox.moe/x8bsur.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="instruction">✨ Toca el libro para abrirlo ✨</div>
+
+    <div class="main-container">
+        <div class="book-wrapper">
+            <div class="book" id="book">
+                <div class="spine"></div>
+                <div class="cover" id="cover">
+                    <div class="heart-corner heart-tl">❤️</div>
+                    <div class="heart-corner heart-tr">❤️</div>
+                    <div class="heart-corner heart-bl">❤️</div>
+                    <div class="heart-corner heart-br">❤️</div>
+                    <div class="cover-title">📖 Para ti amorcito 📖</div>
+                </div>
+                <div class="pages-container" id="pagesContainer"></div>
+            </div>
+
+            <div class="navigation" id="navigation">
+                <div class="nav-btn" id="prevBtn">◀</div>
+                <div class="nav-btn" id="nextBtn">▶</div>
+            </div>
+
+            <div class="close-btn" id="closeBtn">📖</div>
+
+            <div class="page-indicator" id="pageIndicator">Página 1 de 20</div>
+        </div>
+    </div>
+
+    <script>
+        const DATOS_PAGINAS = {
+            // ========== PÁGINA 1 ==========
+            1: {
+                foto1: null,
+                texto1: "✨ Bienvenida a nuestro libro mágico ✨",
+                foto2: null,
+                texto2: "💕 Cada página guarda un recuerdo especial 💕"
+            },
+            // ========== PÁGINA 2 (SOLO TEXTO) ==========
+            2: {
+                textoCompleto: `Hola mi pequeña niña linda ❤️,
+                
+Hice esto para ti… porque siento tanto por ti que quiero decirte mucho y no siempre encuentro la forma de decirlo todo.
+
+Este pequeño espacio es como un pedacito de nosotros, de lo que hemos vivido, de los momentos que se me quedaron guardados y de todo lo que significas para mí.
+
+Quiero que cuando lo veas, recuerdes lo especial que eres, lo bonito que hemos construido y lo feliz que me haces, incluso en los momentos más simples.
+
+Gracias por estar en mi vida, por ser tú, y por cada momento que hemos compartido.
+
+Esto es para ti… con todo mi amor 💕
+                
+Tu persona especial ✨`
+            },
+            // ========== PÁGINA 3 ==========
+            3: { foto1: "https://i.ibb.co/SDsgKC9c/Whats-App-Image-2026-04-22-at-10-42-18-PM.jpg", texto1: "Recuerdo la primera vez que fuimos a un antro como noviecitos, la primera vez que salimos a bailar a un antro", foto2: "https://i.ibb.co/GXjCjmB/imagen2.jpg", texto2: "La vez que fuimos a Six Flags fue algo muy increible para mi, ir juntitos de las manitas, comer, estar todo el dia ahi juntitos y enfrentar muchos juegos fue lo mejor amor" },
+            4: { foto1: "https://i.ibb.co/20KzykJ3/imagen4.jpg", texto1: "Que compraramos esos sueteres de Harry Potter se me hizo muy lindo, alguien de Griffyndor y alguien de Hufflepuf", foto2: "https://i.ibb.co/Pvjc70y9/imagen3.jpg", texto2: "Yo soy y siempre sere tuyo mi vida, aunque no lo tenga dibujado creeme que ese dibujo para mi ya esta tatuado en mi pierna" },
+            5: { foto1: "https://i.ibb.co/ZzD3M58B/Whats-App-Image-2026-04-22-at-10-42-18-PM-1.jpg", texto1: "Esa hermosa sonrisa que tienes hace que todo dentro de mi se derrita, me gustaria que tuvieras mis ojos para que veas la hermosa persona que eres y como iluminas todo.", foto2: "https://i.ibb.co/sXnHQPc/Whats-App-Image-2026-04-22-at-10-42-19-PM.jpg", texto2: "La vez que fuiste a mi casita y nos pusimos a ayudar a mi abuelita para comer me dio risa pero tambien se me hizo muy lindo y mas porque fue la primera vez que conociste bien a mi abuelita" },
+            6: { foto1: "https://i.ibb.co/hJxM9CBF/c9139254-37ae-4dc8-bcec-13de4516787a.jpg", texto1: "Las salidas que tenemos a rebel wings me encantas mucho amor y más porque nos ponemos a jugar y competimos ambos jaja", foto2: "https://i.ibb.co/4Z8yGhWF/4ec82f55-e467-41a7-83bb-b89be32c6218.jpg", texto2: "La vez que fuimos por pan a la esperanza y estuvimos casi todo el dia andando en bicicleta jamas se me olvidara, el erte andar en bibicleta se me hace algo muy lindo" },
+            7: { foto1: "https://i.ibb.co/kV5kSXwp/96c1ec9e-56f2-4f6d-9796-071c4b52758f.jpg", texto1: "Los dias que salimos en bicicleta se volvio algo tan esoecial, lindo y unico entre nosotros que ya no puedo salir en bicicleta si no es contigo amor", foto2: "https://i.ibb.co/v4dfm44R/d7730650-3f4f-406b-b421-87ac5c518d5b.jpg", texto2: "No sabes que orgulloso me siento de ti amor, lograste andar en bicicleta en menos de 7 días, eres capaz de lograr todo lo que te propongas mi amor" },
+            8: { foto1: "https://i.ibb.co/DfLvSgj0/7152552a-a685-4e1f-a936-bebad2b4adb8.jpg", texto1: "Se me hcae muy lindo que vayamos por bebidas con vasos especiales de figuritas y que hasta salimo en la portada de un video amor jajaja", foto2: "https://i.ibb.co/9kBP3rg7/a228d717-8ef0-4693-8686-525da5817307.jpg", texto2: "Ese dinodia estuvo muy dinopadre por las dinoquesadillas, la dinobebida pero mas que nada por estar contigo mi dinoamor" },
+            9: { foto1: "https://i.ibb.co/XxxKvgFW/3cbc89be-8178-46ce-bec7-3e7b90ca9b20.jpg", texto1: "", foto2: "https://i.ibb.co/39TL68hP/38b239c4-080f-40b9-9a5a-438fbf5c0a8b.jpg", texto2: "" },
+            10: { foto1: "https://i.ibb.co/45YkPyK/c9745a9c-dcf9-40df-bcf5-c4bfe003393f.jpg", texto1: "", foto2: null, texto2: "" },
+            11: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            12: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            13: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            14: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            15: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            16: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            17: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            18: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            19: { foto1: null, texto1: "", foto2: null, texto2: "" },
+            20: {
+                foto1: null,
+                texto1: "El final de este libro es solo el comienzo de nuestra historia juntos ❤️",
+                foto2: null,
+                texto2: "Te amo muchísimo 💕"
+            }
+        };
+
+        // ==================== CÓDIGO DEL ÁLBUM ====================
+        const particlesContainer = document.getElementById('particles-container');
+
+        function crearParticula() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const size = Math.random() * 3 + 1;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}%`;
+            const duration = Math.random() * 6 + 3;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            particle.style.opacity = Math.random() * 0.5 + 0.2;
+            particlesContainer.appendChild(particle);
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+
+        for (let i = 0; i < 30; i++) setTimeout(() => crearParticula(), i * 50);
+        setInterval(() => { if (particlesContainer.children.length < 40) crearParticula(); }, 400);
+
+        // Configuración del libro
+        const totalPages = 20;
+        let currentPage = 1;
+        let isOpen = false;
+        let isAnimating = false;
+        let touchStartX = 0;
+
+        const book = document.getElementById('book');
+        const cover = document.getElementById('cover');
+        const pagesContainer = document.getElementById('pagesContainer');
+        const navigation = document.getElementById('navigation');
+        const closeBtn = document.getElementById('closeBtn');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const instruction = document.querySelector('.instruction');
+
+        // Función para crear el contenido de una página
+        function createPageContent(pageNum) {
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page';
+            pageDiv.id = `page${pageNum}`;
+
+            const datos = DATOS_PAGINAS[pageNum] || { foto1: null, texto1: '', foto2: null, texto2: '' };
+
+            // PÁGINA ESPECIAL 2 - SOLO TEXTO
+            if (pageNum === 2 && datos.textoCompleto) {
+                pageDiv.innerHTML = `
+                    <div class="page-text-only">
+                        <textarea class="note-text-full" readonly style="width: 100%; height: 100%; font-family: 'Brush Script MT', 'Comic Sans MS', cursive; font-style: italic; font-size: 1.2rem; border: none; background: transparent; color: #5C3D2E; resize: none; text-align: center; line-height: 1.6; padding: 20px;">${datos.textoCompleto}</textarea>
+                    </div>
+                    <div class="page-number" style="position: absolute; bottom: 10px; left: 0; right: 0; text-align: center;">✦ Página 2 de ${totalPages} ✦</div>
+                `;
+                return pageDiv;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'page-grid';
+
+            // Celda 1: Foto 1 (Superior Izquierda)
+            const cell1 = document.createElement('div');
+            cell1.className = 'grid-cell photo-cell';
+            cell1.innerHTML = `
+                <div class="cell-label">📷</div>
+                <div class="photo-frame" id="photo1-frame-${pageNum}">
+                    ${datos.foto1 ? `<img class="photo-preview" id="photo1-${pageNum}" src="${datos.foto1}">` : '<div class="photo-empty">Sin foto</div>'}
+                </div>
+            `;
+
+            // Celda 2: Texto 1 (Superior Derecha)
+            const cell2 = document.createElement('div');
+            cell2.className = 'grid-cell text-cell';
+            cell2.innerHTML = `
+                <div class="cell-label">✏️</div>
+                <textarea class="note-text" id="text1-${pageNum}" readonly>${datos.texto1 || ''}</textarea>
+            `;
+
+            // Celda 3: Texto 2 (Inferior Izquierda)
+            const cell3 = document.createElement('div');
+            cell3.className = 'grid-cell text-cell';
+            cell3.innerHTML = `
+                <div class="cell-label">✏️</div>
+                <textarea class="note-text" id="text2-${pageNum}" readonly>${datos.texto2 || ''}</textarea>
+            `;
+
+            // Celda 4: Foto 2 (Inferior Derecha)
+            const cell4 = document.createElement('div');
+            cell4.className = 'grid-cell photo-cell';
+            cell4.innerHTML = `
+                <div class="cell-label">📷</div>
+                <div class="photo-frame" id="photo2-frame-${pageNum}">
+                    ${datos.foto2 ? `<img class="photo-preview" id="photo2-${pageNum}" src="${datos.foto2}">` : '<div class="photo-empty">Sin foto</div>'}
+                </div>
+            `;
+
+            grid.appendChild(cell1);
+            grid.appendChild(cell2);
+            grid.appendChild(cell3);
+            grid.appendChild(cell4);
+
+            // Número de página
+            const pageNumDiv = document.createElement('div');
+            pageNumDiv.className = 'page-number';
+            pageNumDiv.textContent = `✦ Página ${pageNum} de ${totalPages} ✦`;
+            grid.appendChild(pageNumDiv);
+
+            pageDiv.appendChild(grid);
+            return pageDiv;
+        }
+
+        // Crear todas las páginas
+        function createAllPages() {
+            pagesContainer.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const page = createPageContent(i);
+                pagesContainer.appendChild(page);
+            }
+        }
+
+        function updatePagesPosition() {
+            const pages = document.querySelectorAll('.page');
+            for (let i = 0; i < pages.length; i++) {
+                if (i + 1 <= currentPage) {
+                    pages[i].style.transform = 'rotateY(-180deg)';
+                    pages[i].style.zIndex = totalPages - (i + 1);
+                } else {
+                    pages[i].style.transform = 'rotateY(0deg)';
+                    pages[i].style.zIndex = totalPages - (i + 1) + 10;
+                }
+            }
+        }
+
+        function openBook() {
+            if (isOpen) return;
+            isOpen = true;
+            book.classList.add('open');
+            cover.style.transform = 'rotateY(-180deg)';
+            cover.style.zIndex = '1';
+
+            // Asegurar que la página 1 sea visible
+            currentPage = 1;
+            pageIndicator.textContent = `Página ${currentPage} de ${totalPages}`;
+
+            setTimeout(() => {
+                navigation.classList.add('visible');
+                closeBtn.classList.add('visible');
+                pageIndicator.classList.add('visible');
+                instruction.style.opacity = '0';
+                setTimeout(() => instruction.style.display = 'none', 500);
+            }, 800);
+            setTimeout(() => updatePagesPosition(), 100);
+        }
+
+        function closeBook() {
+            if (!isOpen || isAnimating) return;
+            isAnimating = true;
+
+            // Quitar clase open del libro
+            book.classList.remove('open');
+
+            // Restaurar portada a su posición original
+            cover.style.transform = 'rotateY(0deg)';
+            cover.style.zIndex = totalPages + 10;
+
+            // Ocultar controles
+            navigation.classList.remove('visible');
+            closeBtn.classList.remove('visible');
+            pageIndicator.classList.remove('visible');
+
+            // Restaurar TODAS las páginas a su posición original (cerradas)
+            const pages = document.querySelectorAll('.page');
+            for (let i = 0; i < pages.length; i++) {
+                pages[i].style.transform = 'rotateY(0deg)';
+                pages[i].style.zIndex = totalPages - i;
+            }
+
+            // Resetear página actual
+            currentPage = 1;
+            pageIndicator.textContent = `Página ${currentPage} de ${totalPages}`;
+
+            setTimeout(() => {
+                isOpen = false;
+                isAnimating = false;
+                instruction.style.display = 'block';
+                instruction.style.opacity = '1';
+            }, 800);
+        }
+
+        function nextPage() {
+            if (isAnimating || currentPage >= totalPages || !isOpen) return;
+            isAnimating = true;
+            const pages = document.querySelectorAll('.page');
+            const pageToFlip = pages[currentPage - 1];
+            if (pageToFlip) {
+                pageToFlip.style.zIndex = totalPages + 10;
+                pageToFlip.style.transform = 'rotateY(-180deg)';
+                setTimeout(() => {
+                    currentPage++;
+                    pageIndicator.textContent = `Página ${currentPage} de ${totalPages}`;
+                    updatePagesPosition();
+                    isAnimating = false;
+                }, 600);
+            } else { isAnimating = false; }
+        }
+
+        function prevPage() {
+            if (isAnimating || currentPage <= 1 || !isOpen) return;
+            isAnimating = true;
+            const pages = document.querySelectorAll('.page');
+            const pageToReturn = pages[currentPage - 2];
+            if (pageToReturn && currentPage > 1) {
+                pageToReturn.style.zIndex = totalPages + 10;
+                pageToReturn.style.transform = 'rotateY(0deg)';
+                setTimeout(() => {
+                    currentPage--;
+                    pageIndicator.textContent = `Página ${currentPage} de ${totalPages}`;
+                    updatePagesPosition();
+                    isAnimating = false;
+                }, 600);
+            } else { isAnimating = false; }
+        }
+
+        // Gestos táctiles
+        book.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        book.addEventListener('touchend', (e) => {
+            if (!isOpen) return;
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchEndX - touchStartX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) prevPage();
+                else nextPage();
+            }
+        });
+
+        // Eventos
+        nextBtn.addEventListener('click', nextPage);
+        prevBtn.addEventListener('click', prevPage);
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeBook();
+        });
+        book.addEventListener('click', (e) => { if (!isOpen) openBook(); });
+
+        // Música
+        const audio = document.getElementById('bgMusic');
+        const musicControl = document.getElementById('musicControl');
+        let isPlaying = false;
+
+        function playMusic() {
+            audio.play().then(() => {
+                isPlaying = true;
+                musicControl.textContent = '🎵';
+            }).catch(() => {
+                musicControl.textContent = '🔇';
+                isPlaying = false;
+            });
+        }
+
+        musicControl.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                musicControl.textContent = '🔇';
+            } else {
+                playMusic();
+            }
+        });
+
+        book.addEventListener('click', () => {
+            if (!isPlaying) playMusic();
+        });
+
+        // Inicializar
+        createAllPages();
+        cover.style.transform = 'rotateY(0deg)';
+        cover.style.zIndex = totalPages + 10;
+        const pages = document.querySelectorAll('.page');
+        for (let i = 0; i < pages.length; i++) {
+            pages[i].style.transform = 'rotateY(0deg)';
+            pages[i].style.zIndex = totalPages - i;
+        }
+    </script>
+</body>
+
+</html>
